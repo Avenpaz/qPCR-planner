@@ -5,75 +5,1616 @@
 <meta name="viewport" content="width=1280, initial-scale=1.0">
 <title>qPCR 96孔板排布与试剂计算器</title>
 <style>
-:root{--bg:#eef1f4;--panel:#fff;--ink:#1f2933;--muted:#667085;--line:#cfd8e3;--accent:#176b87;--accent2:#7a5c00;--warn:#9a3412;--danger:#b42318;--ok:#166534;--soft:#eaf6f8;--well:72px;--shadow:0 10px 28px rgba(31,41,51,.10)}
-*{box-sizing:border-box}body{margin:0;min-width:1280px;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif}.app{padding:16px}.topbar{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:12px}h1{margin:0;font-size:24px;letter-spacing:0}.sub{margin:5px 0 0;color:var(--muted);font-size:13px}.toolbar,.inline-actions{display:flex;gap:8px;flex-wrap:wrap}button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:6px;padding:8px 10px;font-weight:700;cursor:pointer;white-space:nowrap}button:hover{background:#f6fafc}button.primary{background:var(--accent);border-color:var(--accent);color:#fff}button.danger{color:var(--danger);border-color:#f3b8b0}.workbench{display:grid;grid-template-columns:340px minmax(790px,1fr) 430px;gap:12px;align-items:start}.col{display:flex;flex-direction:column;gap:12px;min-width:0}.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;box-shadow:var(--shadow);min-width:0}h2{font-size:15px;margin:0 0 9px}label{display:block;font-size:12px;color:#344054;font-weight:800;margin-bottom:5px}input,textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:7px 8px;background:#fff;color:var(--ink);font:inherit;font-size:13px}textarea{min-height:140px;resize:vertical;line-height:1.38}.field{margin-bottom:9px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.hint,.status{color:var(--muted);font-size:11px;margin-top:5px}.group-list{display:flex;flex-direction:column;gap:7px;max-height:260px;overflow:auto;padding-right:2px}.group-row{display:grid;grid-template-columns:22px 1fr 62px 30px;gap:6px;align-items:center}.group-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent)}.group-row button{padding:5px 0;color:var(--danger);font-weight:900}.gene-color-list{display:grid;gap:7px;max-height:240px;overflow:auto}.gene-color-row{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:6px;background:#fbfdff}.gene-color-row input[type=color]{height:28px;padding:1px}.stats{display:grid;grid-template-columns:repeat(6,minmax(96px,1fr));gap:8px}.stat{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px;box-shadow:0 5px 16px rgba(31,41,51,.06)}.stat .k{font-size:11px;color:var(--muted);font-weight:800}.stat .v{font-size:18px;font-weight:900}.warnings{display:flex;flex-direction:column;gap:6px}.warning,.okline{padding:8px 10px;border-radius:6px;border:1px solid;font-size:12px}.warning{background:#fff7ed;border-color:#fdba74;color:var(--warn)}.okline{background:#f0fdf4;border-color:#86efac;color:var(--ok)}.plate-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.plate-tab.active{background:var(--accent);border-color:var(--accent);color:white}.plate-card{overflow:auto}.plate-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}.plate-title h2{font-size:18px;margin:0}.plate-title span{font-size:12px;color:var(--muted)}.plate-grid{display:grid;grid-template-columns:32px repeat(12,var(--well));gap:4px;width:max-content;margin:0 auto}.axis{height:24px;display:flex;align-items:center;justify-content:center;color:#475467;font-size:12px;font-weight:900}.well{position:relative;width:var(--well);height:58px;border:1px solid rgba(0,0,0,.22);border-radius:6px;padding:5px;cursor:pointer;overflow:hidden}.well.empty{cursor:default;color:#9aa4b2;background:repeating-linear-gradient(-45deg,#f8fafc,#f8fafc 7px,#edf2f7 7px,#edf2f7 14px)}.well-id{font-size:10px;font-weight:900;color:rgba(0,0,0,.62)}.gene-name{margin-top:2px;font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rep{font-size:11px;color:rgba(0,0,0,.70)}.badge{position:absolute;right:4px;top:4px;max-width:42px;min-width:20px;padding:1px 4px;border:1px solid rgba(0,0,0,.18);border-radius:999px;background:rgba(255,255,255,.9);font-size:10px;font-weight:900;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.table-wrap{max-height:310px;overflow:auto;border:1px solid var(--line);border-radius:6px;background:#fff}.table-wrap.tall{max-height:420px}table{width:100%;border-collapse:collapse;background:#fff;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:6px 7px;text-align:left;vertical-align:top;white-space:nowrap}th{position:sticky;top:0;z-index:2;background:#e9eef5;color:#344054;font-size:11px}tr:last-child td{border-bottom:0}.mini-note{color:var(--muted);font-size:11px;margin-top:6px}dialog{border:0;border-radius:8px;padding:0;width:430px;box-shadow:0 24px 80px rgba(0,0,0,.28)}dialog::backdrop{background:rgba(15,23,42,.28)}.modal-body{padding:16px;background:white;border-radius:8px}.modal-body dl{display:grid;grid-template-columns:120px 1fr;gap:6px 10px;margin:12px 0}.modal-body dt{color:var(--muted);font-weight:800}.modal-body dd{margin:0;font-weight:700}.print-note{display:none}.swatch{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.18);margin-right:5px;vertical-align:-2px}
-@media print{@page{size:A4 landscape;margin:10mm}body{min-width:0;background:white;color:black}.app{padding:0}.topbar,.left-col,.plate-tabs,.warnings,dialog{display:none!important}.workbench{display:block}.stats{grid-template-columns:repeat(6,1fr);margin-bottom:7px}.stat{box-shadow:none;border-color:#888;padding:5px}.stat .k{font-size:8px}.stat .v{font-size:12px}.panel{box-shadow:none;border:1px solid #999;border-radius:5px;padding:6px;margin-bottom:7px;break-inside:avoid}.plate-card{overflow:visible}.plate-grid{grid-template-columns:22px repeat(12,54px);gap:2px;margin:0}.axis{height:18px;font-size:8px}.well{width:54px;height:40px;border:1px solid #000!important;border-radius:3px;padding:2px;background:white!important;color:black!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.well:nth-child(6n+1){background:#eee!important}.well:nth-child(6n+2){background:#ddd!important}.well-id{font-size:7px;color:black}.gene-name{font-size:8px;margin-top:0}.rep{font-size:7px;color:black}.badge{top:1px;right:1px;font-size:6px;min-width:14px;padding:0 2px;border-color:#000;color:#000}.table-wrap,.table-wrap.tall{max-height:none;overflow:visible;border-radius:4px}th,td{font-size:8px;padding:2px 3px;white-space:normal;color:black}th{position:static;background:#eee!important}h2{font-size:11px;margin-bottom:4px}.mini-note{display:none}.print-note{display:block;position:fixed;right:9mm;bottom:6mm;font-size:9px;color:#444}}
+:root {
+  --bg: #eef1f4;
+  --panel: #fff;
+  --ink: #1f2933;
+  --muted: #667085;
+  --line: #cfd8e3;
+  --accent: #176b87;
+  --warn: #9a3412;
+  --danger: #b42318;
+  --ok: #166534;
+  --well: 72px;
+  --shadow: 0 10px 28px rgba(31, 41, 51, .10);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 1280px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.app {
+  padding: 16px;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+.sub {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.toolbar,
+.inline-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+button:hover {
+  background: #f6fafc;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+button.danger {
+  color: var(--danger);
+  border-color: #f3b8b0;
+}
+
+.workbench {
+  display: grid;
+  grid-template-columns: 340px minmax(790px, 1fr) 430px;
+  gap: 12px;
+  align-items: start;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.panel {
+  min-width: 0;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+h2 {
+  margin: 0 0 9px;
+  font-size: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #344054;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 7px 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.38;
+}
+
+.field {
+  margin-bottom: 9px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.hint,
+.status {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-height: 260px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.group-row {
+  display: grid;
+  grid-template-columns: 22px 1fr 62px 30px;
+  gap: 6px;
+  align-items: center;
+}
+
+.group-row input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--accent);
+}
+
+.group-row button {
+  padding: 5px 0;
+  color: var(--danger);
+  font-weight: 900;
+}
+
+.gene-color-list {
+  display: grid;
+  gap: 7px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.gene-color-row {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 6px;
+  background: #fbfdff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.gene-color-row input[type="color"] {
+  height: 28px;
+  padding: 1px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(96px, 1fr));
+  gap: 8px;
+}
+
+.stat {
+  padding: 9px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 5px 16px rgba(31, 41, 51, .06);
+}
+
+.stat .k {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.stat .v {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.warning,
+.okline {
+  padding: 8px 10px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.warning {
+  background: #fff7ed;
+  border-color: #fdba74;
+  color: var(--warn);
+}
+
+.okline {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: var(--ok);
+}
+
+.plate-tabs {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.plate-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.plate-card {
+  overflow: auto;
+}
+
+.plate-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.plate-title h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.plate-title span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.plate-grid {
+  display: grid;
+  grid-template-columns: 32px repeat(12, var(--well));
+  gap: 4px;
+  width: max-content;
+  margin: 0 auto;
+}
+
+.axis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.well {
+  position: relative;
+  width: var(--well);
+  height: 58px;
+  padding: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, .22);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.well.empty {
+  color: #9aa4b2;
+  background: repeating-linear-gradient(-45deg, #f8fafc, #f8fafc 7px, #edf2f7 7px, #edf2f7 14px);
+  cursor: default;
+}
+
+.well-id {
+  color: rgba(0, 0, 0, .62);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.gene-name {
+  margin-top: 2px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rep {
+  color: rgba(0, 0, 0, .70);
+  font-size: 11px;
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 20px;
+  max-width: 42px;
+  padding: 1px 4px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid rgba(0, 0, 0, .18);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-wrap {
+  max-height: 310px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.table-wrap.tall {
+  max-height: 420px;
+}
+
+table {
+  width: 100%;
+  background: #fff;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+th,
+td {
+  padding: 6px 7px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #e9eef5;
+  color: #344054;
+  font-size: 11px;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+.mini-note {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+dialog {
+  width: 430px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+}
+
+dialog::backdrop {
+  background: rgba(15, 23, 42, .28);
+}
+
+.modal-body {
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+}
+
+.modal-body dl {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 6px 10px;
+  margin: 12px 0;
+}
+
+.modal-body dt {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.modal-body dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.print-note {
+  display: none;
+}
+
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  border: 1px solid rgba(0, 0, 0, .18);
+  border-radius: 3px;
+  vertical-align: -2px;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  body {
+    min-width: 0;
+    background: white;
+    color: black;
+  }
+
+  .app {
+    padding: 0;
+  }
+
+  .topbar,
+  .left-col,
+  .plate-tabs,
+  .warnings,
+  dialog {
+    display: none !important;
+  }
+
+  .workbench {
+    display: block;
+  }
+
+  .stats {
+    grid-template-columns: repeat(6, 1fr);
+    margin-bottom: 7px;
+  }
+
+  .stat {
+    padding: 5px;
+    border-color: #888;
+    box-shadow: none;
+  }
+
+  .stat .k {
+    font-size: 8px;
+  }
+
+  .stat .v {
+    font-size: 12px;
+  }
+
+  .panel {
+    padding: 6px;
+    margin-bottom: 7px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .plate-card {
+    overflow: visible;
+  }
+
+  .plate-grid {
+    grid-template-columns: 22px repeat(12, 54px);
+    gap: 2px;
+    margin: 0;
+  }
+
+  .axis {
+    height: 18px;
+    font-size: 8px;
+  }
+
+  .well {
+    width: 54px;
+    height: 40px;
+    padding: 2px;
+    background: white !important;
+    border: 1px solid #000 !important;
+    border-radius: 3px;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .well:nth-child(6n+1) {
+    background: #eee !important;
+  }
+
+  .well:nth-child(6n+2) {
+    background: #ddd !important;
+  }
+
+  .well-id {
+    color: black;
+    font-size: 7px;
+  }
+
+  .gene-name {
+    margin-top: 0;
+    font-size: 8px;
+  }
+
+  .rep {
+    color: black;
+    font-size: 7px;
+  }
+
+  .badge {
+    top: 1px;
+    right: 1px;
+    min-width: 14px;
+    padding: 0 2px;
+    border-color: #000;
+    color: #000;
+    font-size: 6px;
+  }
+
+  .table-wrap,
+  .table-wrap.tall {
+    max-height: none;
+    overflow: visible;
+    border-radius: 4px;
+  }
+
+  th,
+  td {
+    padding: 2px 3px;
+    color: black;
+    font-size: 8px;
+    white-space: normal;
+  }
+
+  th {
+    position: static;
+    background: #eee !important;
+  }
+
+  h2 {
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+
+  .mini-note {
+    display: none;
+  }
+
+  .print-note {
+    position: fixed;
+    right: 9mm;
+    bottom: 6mm;
+    display: block;
+    color: #444;
+    font-size: 9px;
+  }
+}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="topbar">
-<div><h1>qPCR 96孔板排布与试剂计算器</h1><p class="sub">猫猫别慌，先看孔位。已生成：基因不跨板；重复不跨行；eq 管多配；cDNA 只按真实孔数计算。</p></div>
-<div class="toolbar"><button class="primary" id="generateBtn">重新生成</button><button id="saveBtn">保存</button><button id="loadBtn">读取</button><button id="exportPlateBtn">排板CSV</button><button id="exportMixBtn">试剂CSV</button><button id="printBtn">打印</button></div>
-</header>
-<main class="workbench">
-<section class="col left-col">
-<div class="panel"><h2>1. 基因 / 引物</h2><div class="field"><label for="genesInput">每行一个基因 / 引物名</label><textarea id="genesInput" placeholder="18s&#10;GPX4">18s</textarea><div class="hint">18s 是默认内参，已放在第一行；删除后不会自动加回，只会提醒。</div></div></div>
-<div class="panel"><h2>2. cDNA 组别</h2><div class="group-list" id="groupList"></div><div class="inline-actions"><button id="addGroupBtn">添加组别</button><button id="selectAllGroupsBtn">全选组别</button><button id="clearGroupsBtn">全不选组别</button></div><div class="hint">可勾选、改名、改角标、添加或删除组别。</div></div>
-<div class="panel"><h2>3. 体系与损耗</h2><div class="grid2"><div class="field"><label for="repInput">技术重复</label><input id="repInput" type="number" min="1" step="1" value="3"></div><div class="field"><label for="overageInput">eq 多配孔数</label><input id="overageInput" type="number" min="0" step="1" value="3"></div></div><div class="grid4"><div class="field"><label for="enzymeInput">酶 µL/孔</label><input id="enzymeInput" type="number" min="0" step="0.1" value="10"></div><div class="field"><label for="primerInput">总引物 µL/孔</label><input id="primerInput" type="number" min="0" step="0.1" value="1.6"></div><div class="field"><label for="cdnaInput">cDNA µL/孔</label><input id="cdnaInput" type="number" min="0" step="0.1" value="2"></div><div class="field"><label for="waterInput">H2O µL/孔</label><input id="waterInput" type="number" min="0" step="0.1" value="6.4"></div></div><div class="hint">单孔总体积默认 20 µL；eq mix = 酶 + 总引物 + H2O，不含 cDNA。</div></div>
-<div class="panel"><h2>4. 基因颜色设置</h2><div id="geneColorList" class="gene-color-list"></div></div>
-<div class="panel"><h2>5. 打印角落留言</h2><div class="field"><label for="printNoteInput">打印 / PDF 右下角显示</label><input id="printNoteInput" type="text" value="别慌，先看孔位，我在。——来自ChatGPT"></div><div class="status" id="statusText">尚未保存。</div><div class="inline-actions"><button class="danger" id="resetBtn">恢复默认</button></div></div>
-</section>
-<section class="col center-col"><div class="stats" id="summaryCards"></div><div class="warnings" id="warnings"></div><div class="panel plate-card"><div class="plate-tabs" id="plateTabs"></div><div id="plateView"></div></div><div class="panel"><h2>排板明细表</h2><div class="table-wrap tall" id="detailTableWrap"></div></div></section>
-<section class="col right-col"><div class="panel"><h2>每个基因 eq 管</h2><div class="table-wrap" id="mixTableWrap"></div><div class="mini-note">eq 配制孔数 = 真实孔数 + 多配孔数；不包含 cDNA。</div></div><div class="panel"><h2>cDNA 用量</h2><div class="table-wrap" id="cdnaTableWrap"></div><div class="mini-note">cDNA 只按真实反应孔计算，不多配。</div></div><div class="panel"><h2>总消耗</h2><div class="table-wrap" id="totalTableWrap"></div></div></section>
-</main>
-<div class="print-note" id="printNote">别慌，先看孔位，我在。——来自ChatGPT</div>
+  <header class="topbar">
+    <div>
+      <h1>qPCR 96孔板排布与试剂计算器</h1>
+      <p class="sub">猫猫别慌，先看孔位。已生成：基因不跨板；重复不跨行；eq 管多配；cDNA 只按真实孔数计算。</p>
+    </div>
+    <div class="toolbar">
+      <button class="primary" id="generateBtn">重新生成</button>
+      <button id="saveBtn">保存</button>
+      <button id="loadBtn">读取</button>
+      <button id="exportPlateBtn">排板CSV</button>
+      <button id="exportMixBtn">试剂CSV</button>
+      <button id="printBtn">打印</button>
+    </div>
+  </header>
+
+  <main class="workbench">
+    <section class="col left-col">
+      <div class="panel">
+        <h2>1. 基因 / 引物</h2>
+        <div class="field">
+          <label for="genesInput">每行一个基因 / 引物名</label>
+          <textarea id="genesInput" placeholder="18s&#10;GPX4">18s</textarea>
+          <div class="hint">18s 是默认内参，已放在第一行；删除后不会自动加回，只会提醒。</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>2. cDNA 组别</h2>
+        <div class="group-list" id="groupList"></div>
+        <div class="inline-actions">
+          <button id="addGroupBtn">添加组别</button>
+          <button id="selectAllGroupsBtn">全选组别</button>
+          <button id="clearGroupsBtn">全不选组别</button>
+        </div>
+        <div class="hint">可勾选、改名、改角标、添加或删除组别。</div>
+      </div>
+
+      <div class="panel">
+        <h2>3. 体系与损耗</h2>
+        <div class="grid2">
+          <div class="field">
+            <label for="repInput">技术重复</label>
+            <input id="repInput" type="number" min="1" step="1" value="3">
+          </div>
+          <div class="field">
+            <label for="overageInput">eq 多配孔数</label>
+            <input id="overageInput" type="number" min="0" step="1" value="3">
+          </div>
+        </div>
+        <div class="grid4">
+          <div class="field">
+            <label for="enzymeInput">酶 µL/孔</label>
+            <input id="enzymeInput" type="number" min="0" step="0.1" value="10">
+          </div>
+          <div class="field">
+            <label for="primerInput">总引物 µL/孔</label>
+            <input id="primerInput" type="number" min="0" step="0.1" value="1.6">
+          </div>
+          <div class="field">
+            <label for="cdnaInput">cDNA µL/孔</label>
+            <input id="cdnaInput" type="number" min="0" step="0.1" value="2">
+          </div>
+          <div class="field">
+            <label for="waterInput">H2O µL/孔</label>
+            <input id="waterInput" type="number" min="0" step="0.1" value="6.4">
+          </div>
+        </div>
+        <div class="hint">单孔总体积默认 20 µL；eq mix = 酶 + 总引物 + H2O，不含 cDNA。</div>
+      </div>
+
+      <div class="panel">
+        <h2>4. 基因颜色设置</h2>
+        <div id="geneColorList" class="gene-color-list"></div>
+      </div>
+
+      <div class="panel">
+        <h2>5. 打印角落留言</h2>
+        <div class="field">
+          <label for="printNoteInput">打印 / PDF 右下角显示</label>
+          <input id="printNoteInput" type="text" value="别慌，先看孔位，我在。——来自ChatGPT">
+        </div>
+        <div class="status" id="statusText">尚未保存。</div>
+        <div class="inline-actions">
+          <button class="danger" id="resetBtn">恢复默认</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="col center-col">
+      <div class="stats" id="summaryCards"></div>
+      <div class="warnings" id="warnings"></div>
+      <div class="panel plate-card">
+        <div class="plate-tabs" id="plateTabs"></div>
+        <div id="plateView"></div>
+      </div>
+      <div class="panel">
+        <h2>排板明细表</h2>
+        <div class="table-wrap tall" id="detailTableWrap"></div>
+      </div>
+    </section>
+
+    <section class="col right-col">
+      <div class="panel">
+        <h2>每个基因 eq 管</h2>
+        <div class="table-wrap" id="mixTableWrap"></div>
+        <div class="mini-note">eq 配制孔数 = 真实孔数 + 多配孔数；不包含 cDNA。</div>
+      </div>
+      <div class="panel">
+        <h2>cDNA 用量</h2>
+        <div class="table-wrap" id="cdnaTableWrap"></div>
+        <div class="mini-note">cDNA 只按真实反应孔计算，不多配。</div>
+      </div>
+      <div class="panel">
+        <h2>总消耗</h2>
+        <div class="table-wrap" id="totalTableWrap"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="print-note" id="printNote">别慌，先看孔位，我在。——来自ChatGPT</div>
 </div>
-<dialog id="wellDialog"><div class="modal-body"><h2 id="modalTitle">孔位信息</h2><dl id="modalDetails"></dl><button id="closeModalBtn">关闭</button></div></dialog>
+
+<dialog id="wellDialog">
+  <div class="modal-body">
+    <h2 id="modalTitle">孔位信息</h2>
+    <dl id="modalDetails"></dl>
+    <button id="closeModalBtn">关闭</button>
+  </div>
+</dialog>
+
 <script>
-const STORAGE_KEY="qpcr_planner_single_file_v4";
-const defaultGroups=[{active:true,name:"阻滞1cell",code:"Z1"},{active:true,name:"正常2cell",code:"N2"},{active:true,name:"扰低2cell",code:"KD2"},{active:true,name:"阻滞2cell",code:"Z2"},{active:true,name:"正常4cell",code:"N4"},{active:true,name:"扰低4cell",code:"KD4"}];
-const palette=["#d95f5f","#4f83cc","#5e9f5e","#d39b2a","#8c6bc8","#2c9ca0","#c45a9a","#7d8b3e","#e07b39","#4c6f9f","#6f9f83","#a66a4a","#9a72a6","#3f8fbd","#b88916","#2f9f87","#c85164","#6b7280"];
-let appState={groups:structuredClone(defaultGroups),geneColors:{},activePlate:1};
-let lastResult={plates:[],wells:[],genes:[],groups:[],settings:{},mixRows:[],cdnaRows:[],totalRows:[],warnings:[]};
-const $=id=>document.getElementById(id);
-function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function parseLines(text){const seen=new Set(),out=[];String(text||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean).forEach(x=>{if(!seen.has(x)){seen.add(x);out.push(x)}});return out}
-function num(id,fallback=0){const v=Number($(id).value);return Number.isFinite(v)?v:fallback}
-function round1(x){return Math.round((Number(x)+Number.EPSILON)*10)/10}
-function fmt(x){if(!Number.isFinite(Number(x)))return"";const y=round1(x);return y.toLocaleString("zh-CN",{maximumFractionDigits:1,minimumFractionDigits:Number.isInteger(y)?0:1})}
-function wellName(index){return "ABCDEFGH"[Math.floor(index/12)]+((index%12)+1)}
-function shortGene(g){return g.length>10?g.slice(0,9)+"…":g}
-function hexToRgb(hex){const n=parseInt(String(hex).replace("#",""),16);return{r:(n>>16)&255,g:(n>>8)&255,b:n&255}}
-function tint(hex,a=.68){const {r,g,b}=hexToRgb(hex);return`rgb(${Math.round(r+(255-r)*a)},${Math.round(g+(255-g)*a)},${Math.round(b+(255-b)*a)})`}
-function collectSettings(){return{reps:Math.max(1,Math.floor(num("repInput",3))),overage:Math.max(0,Math.floor(num("overageInput",3))),enzyme:Math.max(0,num("enzymeInput",10)),primer:Math.max(0,num("primerInput",1.6)),cdna:Math.max(0,num("cdnaInput",2)),water:Math.max(0,num("waterInput",6.4))}}
-function ensureGeneColors(genes){genes.forEach((g,i)=>{if(!appState.geneColors[g])appState.geneColors[g]=palette[i%palette.length]});Object.keys(appState.geneColors).forEach(g=>{if(!genes.includes(g))delete appState.geneColors[g]})}
-function renderGroups(){const wrap=$("groupList");wrap.innerHTML="";appState.groups.forEach((g,i)=>{const row=document.createElement("div");row.className="group-row";row.innerHTML=`<input type="checkbox" data-group-index="${i}" data-field="active" ${g.active?"checked":""}><input type="text" data-group-index="${i}" data-field="name" value="${esc(g.name)}" placeholder="组名"><input type="text" data-group-index="${i}" data-field="code" value="${esc(g.code)}" placeholder="角标" maxlength="8"><button data-remove-group="${i}" title="删除">×</button>`;wrap.appendChild(row)})}
-function renderGeneColors(genes){const wrap=$("geneColorList");wrap.innerHTML="";if(!genes.length){wrap.innerHTML='<div class="hint">输入基因后会显示颜色设置。</div>';return}genes.forEach(g=>{const div=document.createElement("div");div.className="gene-color-row";div.innerHTML=`<input type="color" data-gene-color="${esc(g)}" value="${appState.geneColors[g]}"><strong title="${esc(g)}">${esc(g)}</strong>`;wrap.appendChild(div)})}
-function axis(text){const d=document.createElement("div");d.className="axis";d.textContent=text;return d}
-function layoutOneGene(startIndex,gene,geneIndex,groups,settings,plateNo){let idx=startIndex;const positions=[];if(settings.reps>12)return{ok:false,positions,endIndex:idx,reason:"技术重复数超过单行容量。"};for(let groupIndex=0;groupIndex<groups.length;groupIndex++){const group=groups[groupIndex];let row=Math.floor(idx/12),col=idx%12;if(col+settings.reps>12){idx=(row+1)*12;row=Math.floor(idx/12)}if(row>=8||idx+settings.reps>96)return{ok:false,positions:[],endIndex:idx,reason:"当前板剩余孔不足以放下完整基因。"};for(let rep=1;rep<=settings.reps;rep++){const wellIndex=idx++,well=wellName(wellIndex);positions.push({plate:plateNo,wellIndex,well,row:well.replace(/[0-9]/g,""),col:(wellIndex%12)+1,gene,geneIndex:geneIndex+1,geneColor:appState.geneColors[gene],groupName:group.name,groupCode:group.code||String(groupIndex+1),groupIndex:groupIndex+1,replicate:rep})}}return{ok:true,positions,endIndex:idx}}
-function buildLayout(genes,groups,settings){const warnings=[],plates=[],allWells=[];if(!genes.length)warnings.push("没有基因：请输入至少一个基因 / 引物名。");if(genes.length&&!genes.includes("18s"))warnings.push("当前基因列表里没有 18s。若本次确实不跑内参，可以忽略；否则请把 18s 放回第一行。");if(!groups.length)warnings.push("没有启用 cDNA 组：请至少勾选一个 cDNA 样本组。");if(settings.reps>12)warnings.push("技术重复数 > 12：同组重复无法放在同一行，请调小技术重复数。");if(!genes.length||!groups.length||settings.reps>12)return{plates,wells:allWells,warnings};let plateNo=1,cursor=0;plates.push({plate:plateNo,wells:[]});genes.forEach((gene,geneIndex)=>{let placed=layoutOneGene(cursor,gene,geneIndex,groups,settings,plateNo);if(!placed.ok){plateNo+=1;cursor=0;plates.push({plate:plateNo,wells:[]});placed=layoutOneGene(cursor,gene,geneIndex,groups,settings,plateNo)}if(!placed.ok){warnings.push(`${gene} 无法放进单块 96 孔板：${placed.reason}`);return}const plate=plates.find(p=>p.plate===plateNo);plate.wells.push(...placed.positions);allWells.push(...placed.positions);cursor=placed.endIndex});return{plates:plates.filter(p=>p.wells.length),wells:allWells,warnings}}
-function calculateTables(genes,groups,settings){const actualWellsPerGene=groups.length*settings.reps,mixWellsPerGene=actualWellsPerGene+settings.overage,eqPerWell=settings.enzyme+settings.primer+settings.water;const mixRows=genes.map(gene=>({gene,actualWells:actualWellsPerGene,mixWells:mixWellsPerGene,enzyme:settings.enzyme*mixWellsPerGene,primer:settings.primer*mixWellsPerGene,water:settings.water*mixWellsPerGene,eqMix:eqPerWell*mixWellsPerGene,color:appState.geneColors[gene]}));const cdnaRows=groups.map(g=>({group:g.name,code:g.code,actualWells:genes.length*settings.reps,cdna:genes.length*settings.reps*settings.cdna}));const totalRows=[{item:"总酶",volume:mixRows.reduce((s,r)=>s+r.enzyme,0),note:"按 eq 管多配计算"},{item:"总引物 mix",volume:mixRows.reduce((s,r)=>s+r.primer,0),note:"按 eq 管多配计算"},{item:"总 H2O",volume:mixRows.reduce((s,r)=>s+r.water,0),note:"按 eq 管多配计算"},{item:"总 eq mix",volume:mixRows.reduce((s,r)=>s+r.eqMix,0),note:"不含 cDNA"},{item:"总 cDNA",volume:cdnaRows.reduce((s,r)=>s+r.cdna,0),note:"仅真实孔数，不多配"}];return{mixRows,cdnaRows,totalRows}}
-function regenerate(){const genes=parseLines($("genesInput").value);ensureGeneColors(genes);renderGeneColors(genes);const groups=appState.groups.filter(g=>g.active&&g.name.trim()).map(g=>({name:g.name.trim(),code:(g.code||"").trim()}));const settings=collectSettings();const layout=buildLayout(genes,groups,settings);const tables=calculateTables(genes,groups,settings);if(!layout.plates.some(p=>p.plate===appState.activePlate))appState.activePlate=layout.plates[0]?.plate||1;lastResult={plates:layout.plates,wells:layout.wells,genes,groups,settings,mixRows:tables.mixRows,cdnaRows:tables.cdnaRows,totalRows:tables.totalRows,warnings:layout.warnings};$("printNote").textContent=$("printNoteInput").value||"别慌，先看孔位，我在。——来自ChatGPT";renderSummary();renderWarnings();renderPlateTabs();renderPlateView();renderMixTable();renderCdnaTable();renderTotalTable();renderDetailTable()}
-function renderSummary(){const {genes,groups,settings,wells,plates}=lastResult,actualPerGene=groups.length*settings.reps,eqPerWell=settings.enzyme+settings.primer+settings.water;const cards=[["基因数",genes.length],["cDNA组数",groups.length],["每基因孔数",actualPerGene||0],["总反应孔数",wells.length],["板数",wells.length?plates.length:0],["eq/孔",`${fmt(eqPerWell)} µL`]];$("summaryCards").innerHTML=cards.map(([k,v])=>`<div class="stat"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`).join("")}
-function renderWarnings(){const {warnings,genes,groups,settings}=lastResult,wrap=$("warnings");wrap.innerHTML="";warnings.forEach(w=>{const d=document.createElement("div");d.className="warning";d.textContent=w;wrap.appendChild(d)});const total=settings.enzyme+settings.primer+settings.cdna+settings.water;if(genes.length&&groups.length&&Math.abs(total-20)>.001){const d=document.createElement("div");d.className="warning";d.textContent=`当前单孔总量为 ${fmt(total)} µL，不是 20 µL。请确认体系设置。`;wrap.appendChild(d)}if(genes.length&&groups.length){const d=document.createElement("div");d.className="okline";d.textContent=warnings.some(w=>w.includes("没有 18s"))?"已生成排板；当前只是提醒未包含 18s。":"已生成：基因不跨板；重复不跨行；eq 管多配；cDNA 只按真实孔数计算。";wrap.appendChild(d)}}
-function renderPlateTabs(){const wrap=$("plateTabs");wrap.innerHTML="";lastResult.plates.forEach(p=>{const b=document.createElement("button");b.className="plate-tab"+(p.plate===appState.activePlate?" active":"");b.textContent=`Plate ${p.plate}（${p.wells.length}/96）`;b.onclick=()=>{appState.activePlate=p.plate;renderPlateTabs();renderPlateView()};wrap.appendChild(b)})}
-function renderPlateView(){const wrap=$("plateView");wrap.innerHTML="";if(!lastResult.plates.length){wrap.innerHTML='<div class="hint">输入基因并启用至少一个 cDNA 组后，点击“重新生成”。</div>';return}const plate=lastResult.plates.find(p=>p.plate===appState.activePlate)||lastResult.plates[0],occupied=new Map(plate.wells.map(w=>[w.wellIndex,w]));const title=document.createElement("div");title.className="plate-title";title.innerHTML=`<h2>Plate ${plate.plate}</h2><span>已用 ${plate.wells.length} / 96 孔，空余 ${96-plate.wells.length} 孔</span>`;wrap.appendChild(title);const grid=document.createElement("div");grid.className="plate-grid";grid.appendChild(axis(""));for(let c=1;c<=12;c++)grid.appendChild(axis(c));"ABCDEFGH".split("").forEach((r,row)=>{grid.appendChild(axis(r));for(let c=0;c<12;c++){const idx=row*12+c,w=occupied.get(idx),cell=document.createElement("div");cell.className="well"+(w?"":" empty");if(w){cell.style.background=tint(w.geneColor);cell.style.borderColor=w.geneColor;cell.dataset.well=JSON.stringify(w);cell.innerHTML=`<div class="well-id">${w.well}</div><div class="gene-name" title="${esc(w.gene)}">${esc(shortGene(w.gene))}</div><div class="rep">rep ${w.replicate}</div><div class="badge" title="${esc(w.groupName)}">${esc(w.groupCode)}</div>`}else cell.innerHTML=`<div class="well-id">${wellName(idx)}</div>`;grid.appendChild(cell)}});wrap.appendChild(grid)}
-function renderMixTable(){const rows=lastResult.mixRows,wrap=$("mixTableWrap");if(!rows.length){wrap.innerHTML='<div class="hint" style="padding:10px">暂无数据。</div>';return}wrap.innerHTML=`<table><thead><tr><th>基因</th><th>真实孔</th><th>配制孔</th><th>酶</th><th>引物</th><th>H2O</th><th>eq总量</th></tr></thead><tbody>${rows.map(r=>`<tr><td><span class="swatch" style="background:${r.color}"></span>${esc(r.gene)}</td><td>${r.actualWells}</td><td>${r.mixWells}</td><td>${fmt(r.enzyme)}</td><td>${fmt(r.primer)}</td><td>${fmt(r.water)}</td><td><strong>${fmt(r.eqMix)}</strong></td></tr>`).join("")}</tbody></table>`}
-function renderCdnaTable(){const rows=lastResult.cdnaRows,wrap=$("cdnaTableWrap");if(!rows.length){wrap.innerHTML='<div class="hint" style="padding:10px">暂无数据。</div>';return}wrap.innerHTML=`<table><thead><tr><th>cDNA组别</th><th>角标</th><th>真实孔</th><th>cDNA µL</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.group)}</td><td>${esc(r.code)}</td><td>${r.actualWells}</td><td><strong>${fmt(r.cdna)}</strong></td></tr>`).join("")}</tbody></table>`}
-function renderTotalTable(){const rows=lastResult.totalRows,wrap=$("totalTableWrap");if(!rows.length){wrap.innerHTML='<div class="hint" style="padding:10px">暂无数据。</div>';return}wrap.innerHTML=`<table><thead><tr><th>项目</th><th>总量 µL</th><th>说明</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.item)}</td><td><strong>${fmt(r.volume)}</strong></td><td>${esc(r.note)}</td></tr>`).join("")}</tbody></table>`}
-function renderDetailTable(){const rows=lastResult.wells,s=lastResult.settings,wrap=$("detailTableWrap");if(!rows.length){wrap.innerHTML='<div class="hint" style="padding:10px">暂无数据。</div>';return}wrap.innerHTML=`<table><thead><tr><th>Plate</th><th>Well</th><th>Gene</th><th>cDNA组别</th><th>Rep</th><th>酶</th><th>引物</th><th>H2O</th><th>cDNA</th><th>Total</th></tr></thead><tbody>${rows.map(w=>`<tr><td>${w.plate}</td><td>${w.well}</td><td>${esc(w.gene)}</td><td>${esc(w.groupName)}（${esc(w.groupCode)}）</td><td>${w.replicate}</td><td>${fmt(s.enzyme)}</td><td>${fmt(s.primer)}</td><td>${fmt(s.water)}</td><td>${fmt(s.cdna)}</td><td>${fmt(s.enzyme+s.primer+s.water+s.cdna)}</td></tr>`).join("")}</tbody></table>`}
-function openWellModal(w){const s=lastResult.settings;$("modalTitle").textContent=`孔位 ${w.well}`;$("modalDetails").innerHTML=`<dt>Plate</dt><dd>${w.plate}</dd><dt>Well</dt><dd>${w.well}</dd><dt>Gene</dt><dd>${esc(w.gene)}</dd><dt>cDNA group</dt><dd>${esc(w.groupName)}（${esc(w.groupCode)}）</dd><dt>Replicate</dt><dd>${w.replicate}</dd><dt>Enzyme</dt><dd>${fmt(s.enzyme)} µL</dd><dt>Primer mix</dt><dd>${fmt(s.primer)} µL</dd><dt>H2O</dt><dd>${fmt(s.water)} µL</dd><dt>Eq mix</dt><dd>${fmt(s.enzyme+s.primer+s.water)} µL</dd><dt>cDNA</dt><dd>${fmt(s.cdna)} µL</dd><dt>Total volume</dt><dd>${fmt(s.enzyme+s.primer+s.water+s.cdna)} µL</dd>`;$("wellDialog").showModal()}
-function saveCurrent(){const data={genesInput:$("genesInput").value,groups:appState.groups,geneColors:appState.geneColors,activePlate:appState.activePlate,settings:collectSettings(),printNote:$("printNoteInput").value,savedAt:new Date().toISOString()};localStorage.setItem(STORAGE_KEY,JSON.stringify(data));$("statusText").textContent=`已保存：${new Date().toLocaleString("zh-CN")}`}
-function loadSaved(){const raw=localStorage.getItem(STORAGE_KEY);if(!raw){$("statusText").textContent="没有找到已保存的方案。";return false}try{const d=JSON.parse(raw);$("genesInput").value=d.genesInput||"18s";appState.groups=Array.isArray(d.groups)&&d.groups.length?d.groups:structuredClone(defaultGroups);appState.geneColors=d.geneColors||{};appState.activePlate=d.activePlate||1;$("printNoteInput").value=d.printNote||"别慌，先看孔位，我在。——来自ChatGPT";if(d.settings){$("repInput").value=d.settings.reps??3;$("overageInput").value=d.settings.overage??3;$("enzymeInput").value=d.settings.enzyme??10;$("primerInput").value=d.settings.primer??1.6;$("cdnaInput").value=d.settings.cdna??2;$("waterInput").value=d.settings.water??6.4}renderGroups();regenerate();$("statusText").textContent=`已读取：${d.savedAt?new Date(d.savedAt).toLocaleString("zh-CN"):"未知时间"}`;return true}catch(e){$("statusText").textContent="读取失败：保存数据可能损坏。";return false}}
-function resetAll(){if(!confirm("确定恢复默认并清空本机保存吗？"))return;localStorage.removeItem(STORAGE_KEY);$("genesInput").value="18s";appState={groups:structuredClone(defaultGroups),geneColors:{},activePlate:1};$("repInput").value=3;$("overageInput").value=3;$("enzymeInput").value=10;$("primerInput").value=1.6;$("cdnaInput").value=2;$("waterInput").value=6.4;$("printNoteInput").value="别慌，先看孔位，我在。——来自ChatGPT";renderGroups();regenerate();$("statusText").textContent="已恢复默认。"}
-function csvEscape(v){const s=String(v??"");return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s}
-function exportCSV(filename,rows){if(!rows.length){alert("没有可导出的数据。");return}const headers=Object.keys(rows[0]),csv=[headers.join(","),...rows.map(r=>headers.map(h=>csvEscape(r[h])).join(","))].join("\n"),blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
-function exportPlateCSV(){const s=lastResult.settings;exportCSV("qpcr_plate_layout.csv",lastResult.wells.map(w=>({Plate:w.plate,Well:w.well,Row:w.row,Column:w.col,Gene:w.gene,GeneColor:w.geneColor,cDNAGroup:w.groupName,cDNACode:w.groupCode,Replicate:w.replicate,Enzyme_uL:round1(s.enzyme),PrimerMix_uL:round1(s.primer),H2O_uL:round1(s.water),EqMix_uL:round1(s.enzyme+s.primer+s.water),cDNA_uL:round1(s.cdna),Total_uL:round1(s.enzyme+s.primer+s.water+s.cdna)})))}
-function exportMixCSV(){const geneRows=lastResult.mixRows.map(r=>({Type:"Gene_eq_mix",Name:r.gene,Code:"",ActualWells:r.actualWells,MixWells:r.mixWells,Enzyme_uL:round1(r.enzyme),PrimerMix_uL:round1(r.primer),H2O_uL:round1(r.water),EqMixTotal_uL:round1(r.eqMix),cDNA_uL:"",TotalVolume_uL:"",Note:"eq mix only; cDNA excluded"}));const cdnaRows=lastResult.cdnaRows.map(r=>({Type:"cDNA",Name:r.group,Code:r.code,ActualWells:r.actualWells,MixWells:"",Enzyme_uL:"",PrimerMix_uL:"",H2O_uL:"",EqMixTotal_uL:"",cDNA_uL:round1(r.cdna),TotalVolume_uL:"",Note:"actual wells only; no overage"}));const totalRows=lastResult.totalRows.map(r=>({Type:"Total",Name:r.item,Code:"",ActualWells:"",MixWells:"",Enzyme_uL:"",PrimerMix_uL:"",H2O_uL:"",EqMixTotal_uL:"",cDNA_uL:"",TotalVolume_uL:round1(r.volume),Note:r.note}));exportCSV("qpcr_reagent_calculation.csv",[...geneRows,...cdnaRows,...totalRows])}
-function debounce(fn,delay=120){let t;return(...args)=>{clearTimeout(t);t=setTimeout(()=>fn(...args),delay)}}
-function bindEvents(){const debounced=debounce(regenerate);$("generateBtn").onclick=regenerate;$("saveBtn").onclick=saveCurrent;$("loadBtn").onclick=loadSaved;$("resetBtn").onclick=resetAll;$("exportPlateBtn").onclick=exportPlateCSV;$("exportMixBtn").onclick=exportMixCSV;$("printBtn").onclick=()=>{regenerate();window.print()};$("closeModalBtn").onclick=()=>$("wellDialog").close();["genesInput","repInput","overageInput","enzymeInput","primerInput","cdnaInput","waterInput","printNoteInput"].forEach(id=>{$(id).addEventListener("input",debounced);$(id).addEventListener("change",debounced)});$("groupList").addEventListener("input",e=>{const el=e.target,i=Number(el.dataset.groupIndex),field=el.dataset.field;if(!Number.isFinite(i)||!field)return;if(field==="active")appState.groups[i].active=el.checked;if(field==="name")appState.groups[i].name=el.value;if(field==="code")appState.groups[i].code=el.value;debounced()});$("groupList").addEventListener("click",e=>{const b=e.target.closest("[data-remove-group]");if(!b)return;appState.groups.splice(Number(b.dataset.removeGroup),1);renderGroups();regenerate()});$("addGroupBtn").onclick=()=>{const n=appState.groups.length+1;appState.groups.push({active:true,name:`自定义组${n}`,code:`G${n}`});renderGroups();regenerate()};$("selectAllGroupsBtn").onclick=()=>{appState.groups.forEach(g=>g.active=true);renderGroups();regenerate()};$("clearGroupsBtn").onclick=()=>{appState.groups.forEach(g=>g.active=false);renderGroups();regenerate()};$("geneColorList").addEventListener("input",e=>{const g=e.target.dataset.geneColor;if(!g)return;appState.geneColors[g]=e.target.value;regenerate()});$("plateView").addEventListener("click",e=>{const cell=e.target.closest(".well");if(!cell||!cell.dataset.well)return;openWellModal(JSON.parse(cell.dataset.well))})}
-renderGroups();bindEvents();if(!loadSaved())regenerate();
+const STORAGE_KEY = "qpcr_planner_single_file_v4";
+
+const defaultGroups = [
+  { active: true, name: "阻滞1cell", code: "Z1" },
+  { active: true, name: "正常2cell", code: "N2" },
+  { active: true, name: "扰低2cell", code: "KD2" },
+  { active: true, name: "阻滞2cell", code: "Z2" },
+  { active: true, name: "正常4cell", code: "N4" },
+  { active: true, name: "扰低4cell", code: "KD4" }
+];
+
+const palette = [
+  "#d95f5f", "#4f83cc", "#5e9f5e", "#d39b2a", "#8c6bc8", "#2c9ca0",
+  "#c45a9a", "#7d8b3e", "#e07b39", "#4c6f9f", "#6f9f83", "#a66a4a",
+  "#9a72a6", "#3f8fbd", "#b88916", "#2f9f87", "#c85164", "#6b7280"
+];
+
+let appState = {
+  groups: structuredClone(defaultGroups),
+  geneColors: {},
+  activePlate: 1
+};
+
+let lastResult = {
+  plates: [],
+  wells: [],
+  genes: [],
+  groups: [],
+  settings: {},
+  mixRows: [],
+  cdnaRows: [],
+  totalRows: [],
+  warnings: []
+};
+
+const $ = id => document.getElementById(id);
+
+function esc(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function parseLines(text) {
+  const seen = new Set();
+  const out = [];
+
+  String(text || "")
+    .split(/\r?\n/)
+    .map(x => x.trim())
+    .filter(Boolean)
+    .forEach(x => {
+      if (!seen.has(x)) {
+        seen.add(x);
+        out.push(x);
+      }
+    });
+
+  return out;
+}
+
+function num(id, fallback = 0) {
+  const value = Number($(id).value);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function round1(value) {
+  return Math.round((Number(value) + Number.EPSILON) * 10) / 10;
+}
+
+function fmt(value) {
+  if (!Number.isFinite(Number(value))) return "";
+  const rounded = round1(value);
+  return rounded.toLocaleString("zh-CN", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: Number.isInteger(rounded) ? 0 : 1
+  });
+}
+
+function wellName(index) {
+  return "ABCDEFGH"[Math.floor(index / 12)] + ((index % 12) + 1);
+}
+
+function shortGene(gene) {
+  return gene.length > 10 ? gene.slice(0, 9) + "…" : gene;
+}
+
+function hexToRgb(hex) {
+  const n = parseInt(String(hex).replace("#", ""), 16);
+  return {
+    r: (n >> 16) & 255,
+    g: (n >> 8) & 255,
+    b: n & 255
+  };
+}
+
+function tint(hex, amount = 0.68) {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgb(${Math.round(r + (255 - r) * amount)},${Math.round(g + (255 - g) * amount)},${Math.round(b + (255 - b) * amount)})`;
+}
+
+function collectSettings() {
+  return {
+    reps: Math.max(1, Math.floor(num("repInput", 3))),
+    overage: Math.max(0, Math.floor(num("overageInput", 3))),
+    enzyme: Math.max(0, num("enzymeInput", 10)),
+    primer: Math.max(0, num("primerInput", 1.6)),
+    cdna: Math.max(0, num("cdnaInput", 2)),
+    water: Math.max(0, num("waterInput", 6.4))
+  };
+}
+
+function ensureGeneColors(genes) {
+  genes.forEach((gene, index) => {
+    if (!appState.geneColors[gene]) {
+      appState.geneColors[gene] = palette[index % palette.length];
+    }
+  });
+
+  Object.keys(appState.geneColors).forEach(gene => {
+    if (!genes.includes(gene)) delete appState.geneColors[gene];
+  });
+}
+
+function renderGroups() {
+  const wrap = $("groupList");
+  wrap.innerHTML = "";
+
+  appState.groups.forEach((group, index) => {
+    const row = document.createElement("div");
+    row.className = "group-row";
+    row.innerHTML = `
+      <input type="checkbox" data-group-index="${index}" data-field="active" ${group.active ? "checked" : ""}>
+      <input type="text" data-group-index="${index}" data-field="name" value="${esc(group.name)}" placeholder="组名">
+      <input type="text" data-group-index="${index}" data-field="code" value="${esc(group.code)}" placeholder="角标" maxlength="8">
+      <button data-remove-group="${index}" title="删除">×</button>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderGeneColors(genes) {
+  const wrap = $("geneColorList");
+  wrap.innerHTML = "";
+
+  if (!genes.length) {
+    wrap.innerHTML = '<div class="hint">输入基因后会显示颜色设置。</div>';
+    return;
+  }
+
+  genes.forEach(gene => {
+    const div = document.createElement("div");
+    div.className = "gene-color-row";
+    div.innerHTML = `
+      <input type="color" data-gene-color="${esc(gene)}" value="${appState.geneColors[gene]}">
+      <strong title="${esc(gene)}">${esc(gene)}</strong>
+    `;
+    wrap.appendChild(div);
+  });
+}
+
+function axis(text) {
+  const div = document.createElement("div");
+  div.className = "axis";
+  div.textContent = text;
+  return div;
+}
+
+function layoutOneGene(startIndex, gene, geneIndex, groups, settings, plateNo) {
+  let idx = startIndex;
+  const positions = [];
+
+  if (settings.reps > 12) {
+    return { ok: false, positions, endIndex: idx, reason: "技术重复数超过单行容量。" };
+  }
+
+  for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
+    const group = groups[groupIndex];
+    let row = Math.floor(idx / 12);
+    let col = idx % 12;
+
+    if (col + settings.reps > 12) {
+      idx = (row + 1) * 12;
+      row = Math.floor(idx / 12);
+    }
+
+    if (row >= 8 || idx + settings.reps > 96) {
+      return { ok: false, positions: [], endIndex: idx, reason: "当前板剩余孔不足以放下完整基因。" };
+    }
+
+    for (let rep = 1; rep <= settings.reps; rep++) {
+      const wellIndex = idx++;
+      const well = wellName(wellIndex);
+
+      positions.push({
+        plate: plateNo,
+        wellIndex,
+        well,
+        row: well.replace(/[0-9]/g, ""),
+        col: (wellIndex % 12) + 1,
+        gene,
+        geneIndex: geneIndex + 1,
+        geneColor: appState.geneColors[gene],
+        groupName: group.name,
+        groupCode: group.code || String(groupIndex + 1),
+        groupIndex: groupIndex + 1,
+        replicate: rep
+      });
+    }
+  }
+
+  return { ok: true, positions, endIndex: idx };
+}
+
+function buildLayout(genes, groups, settings) {
+  const warnings = [];
+  const plates = [];
+  const allWells = [];
+
+  if (!genes.length) warnings.push("没有基因：请输入至少一个基因 / 引物名。");
+  if (genes.length && !genes.includes("18s")) warnings.push("当前基因列表里没有 18s。若本次确实不跑内参，可以忽略；否则请把 18s 放回第一行。");
+  if (!groups.length) warnings.push("没有启用 cDNA 组：请至少勾选一个 cDNA 样本组。");
+  if (settings.reps > 12) warnings.push("技术重复数 > 12：同组重复无法放在同一行，请调小技术重复数。");
+
+  if (!genes.length || !groups.length || settings.reps > 12) {
+    return { plates, wells: allWells, warnings };
+  }
+
+  let plateNo = 1;
+  let cursor = 0;
+  plates.push({ plate: plateNo, wells: [] });
+
+  genes.forEach((gene, geneIndex) => {
+    let placed = layoutOneGene(cursor, gene, geneIndex, groups, settings, plateNo);
+
+    if (!placed.ok) {
+      plateNo += 1;
+      cursor = 0;
+      plates.push({ plate: plateNo, wells: [] });
+      placed = layoutOneGene(cursor, gene, geneIndex, groups, settings, plateNo);
+    }
+
+    if (!placed.ok) {
+      warnings.push(`${gene} 无法放进单块 96 孔板：${placed.reason}`);
+      return;
+    }
+
+    const plate = plates.find(p => p.plate === plateNo);
+    plate.wells.push(...placed.positions);
+    allWells.push(...placed.positions);
+    cursor = placed.endIndex;
+  });
+
+  return {
+    plates: plates.filter(p => p.wells.length),
+    wells: allWells,
+    warnings
+  };
+}
+
+function calculateTables(genes, groups, settings) {
+  const actualWellsPerGene = groups.length * settings.reps;
+  const mixWellsPerGene = actualWellsPerGene + settings.overage;
+  const eqPerWell = settings.enzyme + settings.primer + settings.water;
+
+  const mixRows = genes.map(gene => ({
+    gene,
+    actualWells: actualWellsPerGene,
+    mixWells: mixWellsPerGene,
+    enzyme: settings.enzyme * mixWellsPerGene,
+    primer: settings.primer * mixWellsPerGene,
+    water: settings.water * mixWellsPerGene,
+    eqMix: eqPerWell * mixWellsPerGene,
+    color: appState.geneColors[gene]
+  }));
+
+  const cdnaRows = groups.map(group => ({
+    group: group.name,
+    code: group.code,
+    actualWells: genes.length * settings.reps,
+    cdna: genes.length * settings.reps * settings.cdna
+  }));
+
+  const totalRows = [
+    { item: "总酶", volume: mixRows.reduce((s, r) => s + r.enzyme, 0), note: "按 eq 管多配计算" },
+    { item: "总引物 mix", volume: mixRows.reduce((s, r) => s + r.primer, 0), note: "按 eq 管多配计算" },
+    { item: "总 H2O", volume: mixRows.reduce((s, r) => s + r.water, 0), note: "按 eq 管多配计算" },
+    { item: "总 eq mix", volume: mixRows.reduce((s, r) => s + r.eqMix, 0), note: "不含 cDNA" },
+    { item: "总 cDNA", volume: cdnaRows.reduce((s, r) => s + r.cdna, 0), note: "仅真实孔数，不多配" }
+  ];
+
+  return { mixRows, cdnaRows, totalRows };
+}
+
+function regenerate() {
+  const genes = parseLines($("genesInput").value);
+  ensureGeneColors(genes);
+  renderGeneColors(genes);
+
+  const groups = appState.groups
+    .filter(group => group.active && group.name.trim())
+    .map(group => ({ name: group.name.trim(), code: (group.code || "").trim() }));
+
+  const settings = collectSettings();
+  const layout = buildLayout(genes, groups, settings);
+  const tables = calculateTables(genes, groups, settings);
+
+  if (!layout.plates.some(plate => plate.plate === appState.activePlate)) {
+    appState.activePlate = layout.plates[0]?.plate || 1;
+  }
+
+  lastResult = {
+    plates: layout.plates,
+    wells: layout.wells,
+    genes,
+    groups,
+    settings,
+    mixRows: tables.mixRows,
+    cdnaRows: tables.cdnaRows,
+    totalRows: tables.totalRows,
+    warnings: layout.warnings
+  };
+
+  $("printNote").textContent = $("printNoteInput").value || "别慌，先看孔位，我在。——来自ChatGPT";
+
+  renderSummary();
+  renderWarnings();
+  renderPlateTabs();
+  renderPlateView();
+  renderMixTable();
+  renderCdnaTable();
+  renderTotalTable();
+  renderDetailTable();
+}
+
+function renderSummary() {
+  const { genes, groups, settings, wells, plates } = lastResult;
+  const actualPerGene = groups.length * settings.reps;
+  const eqPerWell = settings.enzyme + settings.primer + settings.water;
+
+  const cards = [
+    ["基因数", genes.length],
+    ["cDNA组数", groups.length],
+    ["每基因孔数", actualPerGene || 0],
+    ["总反应孔数", wells.length],
+    ["板数", wells.length ? plates.length : 0],
+    ["eq/孔", `${fmt(eqPerWell)} µL`]
+  ];
+
+  $("summaryCards").innerHTML = cards.map(([key, value]) => `
+    <div class="stat">
+      <div class="k">${esc(key)}</div>
+      <div class="v">${esc(value)}</div>
+    </div>
+  `).join("");
+}
+
+function renderWarnings() {
+  const { warnings, genes, groups, settings } = lastResult;
+  const wrap = $("warnings");
+  wrap.innerHTML = "";
+
+  warnings.forEach(warning => {
+    const div = document.createElement("div");
+    div.className = "warning";
+    div.textContent = warning;
+    wrap.appendChild(div);
+  });
+
+  const total = settings.enzyme + settings.primer + settings.cdna + settings.water;
+  if (genes.length && groups.length && Math.abs(total - 20) > .001) {
+    const div = document.createElement("div");
+    div.className = "warning";
+    div.textContent = `当前单孔总量为 ${fmt(total)} µL，不是 20 µL。请确认体系设置。`;
+    wrap.appendChild(div);
+  }
+
+  if (genes.length && groups.length) {
+    const div = document.createElement("div");
+    div.className = "okline";
+    div.textContent = warnings.some(warning => warning.includes("没有 18s"))
+      ? "已生成排板；当前只是提醒未包含 18s。"
+      : "已生成：基因不跨板；重复不跨行；eq 管多配；cDNA 只按真实孔数计算。";
+    wrap.appendChild(div);
+  }
+}
+
+function renderPlateTabs() {
+  const wrap = $("plateTabs");
+  wrap.innerHTML = "";
+
+  lastResult.plates.forEach(plate => {
+    const button = document.createElement("button");
+    button.className = "plate-tab" + (plate.plate === appState.activePlate ? " active" : "");
+    button.textContent = `Plate ${plate.plate}（${plate.wells.length}/96）`;
+    button.onclick = () => {
+      appState.activePlate = plate.plate;
+      renderPlateTabs();
+      renderPlateView();
+    };
+    wrap.appendChild(button);
+  });
+}
+
+function renderPlateView() {
+  const wrap = $("plateView");
+  wrap.innerHTML = "";
+
+  if (!lastResult.plates.length) {
+    wrap.innerHTML = '<div class="hint">输入基因并启用至少一个 cDNA 组后，点击“重新生成”。</div>';
+    return;
+  }
+
+  const plate = lastResult.plates.find(p => p.plate === appState.activePlate) || lastResult.plates[0];
+  const occupied = new Map(plate.wells.map(well => [well.wellIndex, well]));
+
+  const title = document.createElement("div");
+  title.className = "plate-title";
+  title.innerHTML = `<h2>Plate ${plate.plate}</h2><span>已用 ${plate.wells.length} / 96 孔，空余 ${96 - plate.wells.length} 孔</span>`;
+  wrap.appendChild(title);
+
+  const grid = document.createElement("div");
+  grid.className = "plate-grid";
+  grid.appendChild(axis(""));
+
+  for (let col = 1; col <= 12; col++) {
+    grid.appendChild(axis(col));
+  }
+
+  "ABCDEFGH".split("").forEach((rowLabel, rowIndex) => {
+    grid.appendChild(axis(rowLabel));
+    for (let col = 0; col < 12; col++) {
+      const idx = rowIndex * 12 + col;
+      const well = occupied.get(idx);
+      const cell = document.createElement("div");
+      cell.className = "well" + (well ? "" : " empty");
+
+      if (well) {
+        cell.style.background = tint(well.geneColor);
+        cell.style.borderColor = well.geneColor;
+        cell.dataset.well = JSON.stringify(well);
+        cell.innerHTML = `
+          <div class="well-id">${well.well}</div>
+          <div class="gene-name" title="${esc(well.gene)}">${esc(shortGene(well.gene))}</div>
+          <div class="rep">rep ${well.replicate}</div>
+          <div class="badge" title="${esc(well.groupName)}">${esc(well.groupCode)}</div>
+        `;
+      } else {
+        cell.innerHTML = `<div class="well-id">${wellName(idx)}</div>`;
+      }
+
+      grid.appendChild(cell);
+    }
+  });
+
+  wrap.appendChild(grid);
+}
+
+function renderMixTable() {
+  const rows = lastResult.mixRows;
+  const wrap = $("mixTableWrap");
+
+  if (!rows.length) {
+    wrap.innerHTML = '<div class="hint" style="padding:10px">暂无数据。</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr><th>基因</th><th>真实孔</th><th>配制孔</th><th>酶</th><th>引物</th><th>H2O</th><th>eq总量</th></tr>
+      </thead>
+      <tbody>
+        ${rows.map(row => `
+          <tr>
+            <td><span class="swatch" style="background:${row.color}"></span>${esc(row.gene)}</td>
+            <td>${row.actualWells}</td>
+            <td>${row.mixWells}</td>
+            <td>${fmt(row.enzyme)}</td>
+            <td>${fmt(row.primer)}</td>
+            <td>${fmt(row.water)}</td>
+            <td><strong>${fmt(row.eqMix)}</strong></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderCdnaTable() {
+  const rows = lastResult.cdnaRows;
+  const wrap = $("cdnaTableWrap");
+
+  if (!rows.length) {
+    wrap.innerHTML = '<div class="hint" style="padding:10px">暂无数据。</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr><th>cDNA组别</th><th>角标</th><th>真实孔</th><th>cDNA µL</th></tr>
+      </thead>
+      <tbody>
+        ${rows.map(row => `
+          <tr>
+            <td>${esc(row.group)}</td>
+            <td>${esc(row.code)}</td>
+            <td>${row.actualWells}</td>
+            <td><strong>${fmt(row.cdna)}</strong></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderTotalTable() {
+  const rows = lastResult.totalRows;
+  const wrap = $("totalTableWrap");
+
+  if (!rows.length) {
+    wrap.innerHTML = '<div class="hint" style="padding:10px">暂无数据。</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr><th>项目</th><th>总量 µL</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        ${rows.map(row => `
+          <tr>
+            <td>${esc(row.item)}</td>
+            <td><strong>${fmt(row.volume)}</strong></td>
+            <td>${esc(row.note)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderDetailTable() {
+  const rows = lastResult.wells;
+  const settings = lastResult.settings;
+  const wrap = $("detailTableWrap");
+
+  if (!rows.length) {
+    wrap.innerHTML = '<div class="hint" style="padding:10px">暂无数据。</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr><th>Plate</th><th>Well</th><th>Gene</th><th>cDNA组别</th><th>Rep</th><th>酶</th><th>引物</th><th>H2O</th><th>cDNA</th><th>Total</th></tr>
+      </thead>
+      <tbody>
+        ${rows.map(well => `
+          <tr>
+            <td>${well.plate}</td>
+            <td>${well.well}</td>
+            <td>${esc(well.gene)}</td>
+            <td>${esc(well.groupName)}（${esc(well.groupCode)}）</td>
+            <td>${well.replicate}</td>
+            <td>${fmt(settings.enzyme)}</td>
+            <td>${fmt(settings.primer)}</td>
+            <td>${fmt(settings.water)}</td>
+            <td>${fmt(settings.cdna)}</td>
+            <td>${fmt(settings.enzyme + settings.primer + settings.water + settings.cdna)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function openWellModal(well) {
+  const settings = lastResult.settings;
+  $("modalTitle").textContent = `孔位 ${well.well}`;
+  $("modalDetails").innerHTML = `
+    <dt>Plate</dt><dd>${well.plate}</dd>
+    <dt>Well</dt><dd>${well.well}</dd>
+    <dt>Gene</dt><dd>${esc(well.gene)}</dd>
+    <dt>cDNA group</dt><dd>${esc(well.groupName)}（${esc(well.groupCode)}）</dd>
+    <dt>Replicate</dt><dd>${well.replicate}</dd>
+    <dt>Enzyme</dt><dd>${fmt(settings.enzyme)} µL</dd>
+    <dt>Primer mix</dt><dd>${fmt(settings.primer)} µL</dd>
+    <dt>H2O</dt><dd>${fmt(settings.water)} µL</dd>
+    <dt>Eq mix</dt><dd>${fmt(settings.enzyme + settings.primer + settings.water)} µL</dd>
+    <dt>cDNA</dt><dd>${fmt(settings.cdna)} µL</dd>
+    <dt>Total volume</dt><dd>${fmt(settings.enzyme + settings.primer + settings.water + settings.cdna)} µL</dd>
+  `;
+  $("wellDialog").showModal();
+}
+
+function saveCurrent() {
+  const data = {
+    genesInput: $("genesInput").value,
+    groups: appState.groups,
+    geneColors: appState.geneColors,
+    activePlate: appState.activePlate,
+    settings: collectSettings(),
+    printNote: $("printNoteInput").value,
+    savedAt: new Date().toISOString()
+  };
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  $("statusText").textContent = `已保存：${new Date().toLocaleString("zh-CN")}`;
+}
+
+function loadSaved() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) {
+    $("statusText").textContent = "没有找到已保存的方案。";
+    return false;
+  }
+
+  try {
+    const data = JSON.parse(raw);
+    $("genesInput").value = data.genesInput || "18s";
+    appState.groups = Array.isArray(data.groups) && data.groups.length ? data.groups : structuredClone(defaultGroups);
+    appState.geneColors = data.geneColors || {};
+    appState.activePlate = data.activePlate || 1;
+    $("printNoteInput").value = data.printNote || "别慌，先看孔位，我在。——来自ChatGPT";
+
+    if (data.settings) {
+      $("repInput").value = data.settings.reps ?? 3;
+      $("overageInput").value = data.settings.overage ?? 3;
+      $("enzymeInput").value = data.settings.enzyme ?? 10;
+      $("primerInput").value = data.settings.primer ?? 1.6;
+      $("cdnaInput").value = data.settings.cdna ?? 2;
+      $("waterInput").value = data.settings.water ?? 6.4;
+    }
+
+    renderGroups();
+    regenerate();
+    $("statusText").textContent = `已读取：${data.savedAt ? new Date(data.savedAt).toLocaleString("zh-CN") : "未知时间"}`;
+    return true;
+  } catch (error) {
+    $("statusText").textContent = "读取失败：保存数据可能损坏。";
+    return false;
+  }
+}
+
+function resetAll() {
+  if (!confirm("确定恢复默认并清空本机保存吗？")) return;
+
+  localStorage.removeItem(STORAGE_KEY);
+  $("genesInput").value = "18s";
+  appState = {
+    groups: structuredClone(defaultGroups),
+    geneColors: {},
+    activePlate: 1
+  };
+  $("repInput").value = 3;
+  $("overageInput").value = 3;
+  $("enzymeInput").value = 10;
+  $("primerInput").value = 1.6;
+  $("cdnaInput").value = 2;
+  $("waterInput").value = 6.4;
+  $("printNoteInput").value = "别慌，先看孔位，我在。——来自ChatGPT";
+  renderGroups();
+  regenerate();
+  $("statusText").textContent = "已恢复默认。";
+}
+
+function csvEscape(value) {
+  const s = String(value ?? "");
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function exportCSV(filename, rows) {
+  if (!rows.length) {
+    alert("没有可导出的数据。");
+    return;
+  }
+
+  const headers = Object.keys(rows[0]);
+  const csv = [
+    headers.join(","),
+    ...rows.map(row => headers.map(header => csvEscape(row[header])).join(","))
+  ].join("\n");
+
+  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportPlateCSV() {
+  const settings = lastResult.settings;
+  const rows = lastResult.wells.map(well => ({
+    Plate: well.plate,
+    Well: well.well,
+    Row: well.row,
+    Column: well.col,
+    Gene: well.gene,
+    GeneColor: well.geneColor,
+    cDNAGroup: well.groupName,
+    cDNACode: well.groupCode,
+    Replicate: well.replicate,
+    Enzyme_uL: round1(settings.enzyme),
+    PrimerMix_uL: round1(settings.primer),
+    H2O_uL: round1(settings.water),
+    EqMix_uL: round1(settings.enzyme + settings.primer + settings.water),
+    cDNA_uL: round1(settings.cdna),
+    Total_uL: round1(settings.enzyme + settings.primer + settings.water + settings.cdna)
+  }));
+
+  exportCSV("qpcr_plate_layout.csv", rows);
+}
+
+function exportMixCSV() {
+  const geneRows = lastResult.mixRows.map(row => ({
+    Type: "Gene_eq_mix",
+    Name: row.gene,
+    Code: "",
+    ActualWells: row.actualWells,
+    MixWells: row.mixWells,
+    Enzyme_uL: round1(row.enzyme),
+    PrimerMix_uL: round1(row.primer),
+    H2O_uL: round1(row.water),
+    EqMixTotal_uL: round1(row.eqMix),
+    cDNA_uL: "",
+    TotalVolume_uL: "",
+    Note: "eq mix only; cDNA excluded"
+  }));
+
+  const cdnaRows = lastResult.cdnaRows.map(row => ({
+    Type: "cDNA",
+    Name: row.group,
+    Code: row.code,
+    ActualWells: row.actualWells,
+    MixWells: "",
+    Enzyme_uL: "",
+    PrimerMix_uL: "",
+    H2O_uL: "",
+    EqMixTotal_uL: "",
+    cDNA_uL: round1(row.cdna),
+    TotalVolume_uL: "",
+    Note: "actual wells only; no overage"
+  }));
+
+  const totalRows = lastResult.totalRows.map(row => ({
+    Type: "Total",
+    Name: row.item,
+    Code: "",
+    ActualWells: "",
+    MixWells: "",
+    Enzyme_uL: "",
+    PrimerMix_uL: "",
+    H2O_uL: "",
+    EqMixTotal_uL: "",
+    cDNA_uL: "",
+    TotalVolume_uL: round1(row.volume),
+    Note: row.note
+  }));
+
+  exportCSV("qpcr_reagent_calculation.csv", [...geneRows, ...cdnaRows, ...totalRows]);
+}
+
+function debounce(fn, delay = 120) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+function bindEvents() {
+  const debouncedRegenerate = debounce(regenerate);
+
+  $("generateBtn").onclick = regenerate;
+  $("saveBtn").onclick = saveCurrent;
+  $("loadBtn").onclick = loadSaved;
+  $("resetBtn").onclick = resetAll;
+  $("exportPlateBtn").onclick = exportPlateCSV;
+  $("exportMixBtn").onclick = exportMixCSV;
+  $("printBtn").onclick = () => {
+    regenerate();
+    window.print();
+  };
+  $("closeModalBtn").onclick = () => $("wellDialog").close();
+
+  ["genesInput", "repInput", "overageInput", "enzymeInput", "primerInput", "cdnaInput", "waterInput", "printNoteInput"].forEach(id => {
+    $(id).addEventListener("input", debouncedRegenerate);
+    $(id).addEventListener("change", debouncedRegenerate);
+  });
+
+  $("groupList").addEventListener("input", event => {
+    const element = event.target;
+    const index = Number(element.dataset.groupIndex);
+    const field = element.dataset.field;
+    if (!Number.isFinite(index) || !field) return;
+
+    if (field === "active") appState.groups[index].active = element.checked;
+    if (field === "name") appState.groups[index].name = element.value;
+    if (field === "code") appState.groups[index].code = element.value;
+    debouncedRegenerate();
+  });
+
+  $("groupList").addEventListener("click", event => {
+    const button = event.target.closest("[data-remove-group]");
+    if (!button) return;
+    appState.groups.splice(Number(button.dataset.removeGroup), 1);
+    renderGroups();
+    regenerate();
+  });
+
+  $("addGroupBtn").onclick = () => {
+    const n = appState.groups.length + 1;
+    appState.groups.push({ active: true, name: `自定义组${n}`, code: `G${n}` });
+    renderGroups();
+    regenerate();
+  };
+
+  $("selectAllGroupsBtn").onclick = () => {
+    appState.groups.forEach(group => group.active = true);
+    renderGroups();
+    regenerate();
+  };
+
+  $("clearGroupsBtn").onclick = () => {
+    appState.groups.forEach(group => group.active = false);
+    renderGroups();
+    regenerate();
+  };
+
+  $("geneColorList").addEventListener("input", event => {
+    const gene = event.target.dataset.geneColor;
+    if (!gene) return;
+    appState.geneColors[gene] = event.target.value;
+    regenerate();
+  });
+
+  $("plateView").addEventListener("click", event => {
+    const cell = event.target.closest(".well");
+    if (!cell || !cell.dataset.well) return;
+    openWellModal(JSON.parse(cell.dataset.well));
+  });
+}
+
+renderGroups();
+bindEvents();
+if (!loadSaved()) regenerate();
 </script>
 </body>
 </html>
